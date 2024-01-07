@@ -24,28 +24,17 @@ import {
   useRowSelect,
 } from "@table-library/react-table-library/select";
 
-const nodes = [
-    {
-        id: "1",
-        name: "Ali",
-        type: "Human",
-        isAdmin: false,
-    },
-    {
-        id: "2",
-        name: "Mah",
-        type: "Human",
-        isAdmin: false,
-    },
-    {
-        id: "3",
-        name: "Ahmet",
-        type: "Human",
-        isAdmin: false,
-    }
-];
+interface User {
+  CreatedAt: string;
+  UpdatedAt: string;
+  DeletedAt: string | null;
+  ID: number;
+  Name: string;
+  Surname: string;
+  Email: string;
+}
 
-const DataComponent = () => {
+const DataComponent = ({ nodes }: { nodes: User[] }) => {
   const data = { nodes };
 
   const theme = useTheme({
@@ -62,10 +51,10 @@ const DataComponent = () => {
     onChange: onSelectChange,
   });
 
-  function onSelectChange(action:any, state:any) {
+  function onSelectChange(action: any, state: any) {
     // console.log(action, state); 
     console.log(state.ids);
-    
+
   }
 
   return (
@@ -76,7 +65,7 @@ const DataComponent = () => {
         layout={{ custom: true }}
         select={select}
       >
-        {(tableList:object[]) => (
+        {(tableList: User[]) => (
           <>
             <Header>
               <HeaderRow>
@@ -97,20 +86,20 @@ const DataComponent = () => {
             </Header>
 
             <Body>
-              {tableList.map((item:any) => (
-                <Row key={item.id} item={item}>
+              {tableList.map((item: User) => (
+                <Row key={item.ID} item={item}>
                   <Cell stiff>
                     <MaterialCheckbox
                       inputProps={{ "aria-label": "select item" }}
                       size="small"
-                      checked={select.state.ids.includes(item.id)}
-                      onChange={() => select.fns.onToggleById(item.id)}
+                      checked={select.state.ids.includes(item.ID)}
+                      onChange={() => select.fns.onToggleById(item.ID)}
                     />
                   </Cell>
-                  <Cell >{item.id}</Cell>
-                  <Cell>{item.name}</Cell>
-                  <Cell>{item.type}</Cell>
-                  <Cell>{item.isAdmin.toString()}</Cell>
+                  <Cell >{item.ID}</Cell>
+                  <Cell>{item.Name}</Cell>
+                  <Cell>{item.Surname}</Cell>
+                  <Cell>{item.Email}</Cell>
                 </Row>
               ))}
             </Body>
