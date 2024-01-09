@@ -1,30 +1,29 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 
-interface User {
+export interface User {
     CreatedAt: string | null;
     UpdatedAt: string | null;
     DeletedAt: string | null;
     ID: number | null;
-    Name: string;
-    Surname: string;
+    FirstName: string;
+    LastName: string;
     Email: string;
 }
 
 const userService = {
-    getAllUsers: async (): Promise<User[]> => {
+    async getAllUsers(): Promise<User[]> {
         try {
-            const response: AxiosResponse<User[]> = await axios.get('http://127.0.0.1:8080/user');
+            const response = await axios.get('http://127.0.0.1:8080/user');
             return response.data;
         } catch (error) {
             console.error('Error fetching users:', error);
             throw new Error('Failed to fetch users');
         }
     },
-    addNewUser: async (userData: User): Promise<User> => {
+    async addNewUser(userData: User): Promise<User> {
+        console.log(userData);
         try {
-            console.log(userData);
-            
-            const response: AxiosResponse<User> = await axios.post('http://127.0.0.1:8080/new_user', userData);
+            const response = await axios.post('http://127.0.0.1:8080/new_user', userData);
             return response.data;
         } catch (error) {
             console.error('Error adding user:', error);
@@ -32,4 +31,5 @@ const userService = {
         }
     },
 };
+
 export default userService;
