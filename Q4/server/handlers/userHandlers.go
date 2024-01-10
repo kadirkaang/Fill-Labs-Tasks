@@ -66,3 +66,25 @@ func CreateUser(c *fiber.Ctx) error {
 	fmt.Println("Create User")
 	return c.Status(http.StatusCreated).JSON(newUser)
 }
+
+func DeleteUserByIds(c *fiber.Ctx) error {
+	idsString := c.Params("ids")
+	fmt.Println(idsString)
+	idsSlice := strings.Split(idsString, ",")
+
+	var idsInt []int
+	for _, idStr := range idsSlice {
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			fmt.Println("Invalid Number:", idStr)
+			return err
+		}
+		idsInt = append(idsInt, id)
+	}
+	result := utils.DB.Where("id IN ?", idsInt).Delete(&[]models.User{})
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return c.SendString("Users deleted successfully")
+}
