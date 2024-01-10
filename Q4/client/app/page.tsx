@@ -1,11 +1,14 @@
 "use client"
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useEffect } from 'react';
-import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
-import { Button } from '@mui/material';
+import { DataGrid, GridColDef, GridRowId, GridRowSelectionModel } from '@mui/x-data-grid';
+import { Button, Stack } from '@mui/material';
 import userService, { User } from '@/services/userServices';
 
-export default function ControlledSelectionGrid() {
+export default function AllDataGrid() {
+    const router = useRouter();
+
     const columns: GridColDef[] = [
         { field: 'id', headerName: 'ID', width: 130 },
         { field: 'firstname', headerName: 'First Name', width: 130 },
@@ -14,6 +17,7 @@ export default function ControlledSelectionGrid() {
     ];
 
     const [rows, setRows] = React.useState<any[]>([]);
+    const [userIds, setUserIds] = React.useState<GridRowId[]>([])
 
     useEffect(() => {
         getAllData();
@@ -29,6 +33,12 @@ export default function ControlledSelectionGrid() {
                 console.log(err);
             });
     }
+
+    const handleDeleteAndUpdateButtonClick = (userIds: GridRowId[]) => {
+        const userIdString = userIds.join(',');
+        router.push(`/user/delete?userIds=${userIdString}`);
+    }
+
     function handleUserData(users: User[]) {
         return users.map(user => ({
             id: user.ID,
@@ -37,6 +47,7 @@ export default function ControlledSelectionGrid() {
             email: user.Email
         }));
     }
+
     const [rowSelectionModel, setRowSelectionModel] =
         React.useState<GridRowSelectionModel>([]);
 
@@ -48,15 +59,28 @@ export default function ControlledSelectionGrid() {
                         USER MANAGEMENT
                     </h2>
                     <div>
-                        <Button variant="contained" href='http://localhost:3000/user'>
-                            New
-                        </Button>
-                        <Button variant="contained" href='#'>
-                            Update
-                        </Button>
-                        <Button variant="contained" href='#'>
-                            Delete
-                        </Button>
+                        <Stack direction="row" spacing={1}>
+                            <Button
+                                variant="outlined"
+                                onClick={() => router.push('/user')}
+                            >
+                                New
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                onClick={() => handleDeleteAndUpdateButtonClick(userIds)}
+                                disabled={userIds.length === 0}
+                            >
+                                Update
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                onClick={() => handleDeleteAndUpdateButtonClick(userIds)}
+                                disabled={userIds.length === 0}
+                            >
+                                Delete
+                            </Button>
+                        </Stack>
                     </div>
                 </div>
                 <div>
@@ -65,7 +89,7 @@ export default function ControlledSelectionGrid() {
                         columns={columns}
                         checkboxSelection
                         onRowSelectionModelChange={(newRowSelectionModel) => {
-                            console.log(newRowSelectionModel);
+                            setUserIds(newRowSelectionModel)
                             setRowSelectionModel(newRowSelectionModel);
                         }}
                         rowSelectionModel={rowSelectionModel}
