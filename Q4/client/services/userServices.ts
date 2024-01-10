@@ -30,6 +30,24 @@ const userService = {
             throw new Error('Failed to add user');
         }
     },
+    async getUsersById(userIds: number[]): Promise<User> {
+        try {
+            const response = await axios.get(`http://127.0.0.1:8080/users/${userIds.join(',')}`);
+            return response.data;
+        } catch (error) {
+            console.error(`Error fetching user with ID ${userIds}:`, error);
+            throw new Error('Failed to fetch user');
+        }
+    },
+    async deleteUsersByIds(userIds: number[]) {
+        try {
+            const response = await axios.delete(`http://127.0.0.1:8080/delete_users/${userIds.join(',')}`);
+            return response.data;
+        } catch (error) {
+            console.error(`Error deleting users with IDs ${userIds}:`, error);
+            throw new Error('Failed to delete users');
+        }
+    },
 };
 
 export default userService;
