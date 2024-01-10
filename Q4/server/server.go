@@ -23,6 +23,8 @@ func main() {
 	app.Get("/user", handlers.GetAllUser)
 	app.Get("/user/:id", handlers.GetUser)
 	app.Post("/new_user", handlers.CreateUser)
+	app.Get("/users/:ids", handlers.GetUsers)
+	app.Delete("/delete_users/:Ids", handlers.DeleteUserByIds)
 
 	app.Listen(":8080")
 }
