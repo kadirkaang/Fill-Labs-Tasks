@@ -1,25 +1,17 @@
 "use client"
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { TextField, Button, Grid } from '@mui/material';
-import userService from '@/services/userServices';
+import { TextField, Button, Grid, Stack } from '@mui/material';
+import userService, { User } from '@/services/userServices';
+import { useRouter } from 'next/navigation';
 
 interface FormData {
   firstName: string;
   lastName: string;
   email: string;
 }
-interface User {
-    CreatedAt: string | null;
-    UpdatedAt: string | null;
-    DeletedAt: string | null;
-    ID: number | null;
-    Name: string;
-    Surname: string;
-    Email: string;
-}
 
-
-const MyForm: React.FC = () => {
+const UserForm: React.FC = () => {
+  const router = useRouter()
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
@@ -39,17 +31,16 @@ const MyForm: React.FC = () => {
         UpdatedAt: null,
         DeletedAt: null,
         ID: null,
-        Name: formData.firstName,
-        Surname: formData.lastName,
+        FirstName: formData.firstName,
+        LastName: formData.lastName,
         Email: formData.email,
       };
 
       const addedUser = await userService.addNewUser(newUser);
       console.log('User added:', addedUser);
-      // Başarılı ekleme durumunda istediğiniz işlemleri yapabilirsiniz
+      router.push('/')
     } catch (error) {
       console.error('Error adding user:', error);
-      // Hata durumunda kullanıcıya bildirim veya hata işleme yapılabilir
     }
   };
 
@@ -88,9 +79,14 @@ const MyForm: React.FC = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <Button variant="outlined" color="primary" type="submit">
-              Submit
-            </Button>
+            <Stack direction="row" spacing={2}>
+              <Button variant="outlined" color="primary" type="submit">
+                Submit
+              </Button>
+              <Button variant="outlined" color="error" onClick={() => router.push('/')}>
+                Back
+              </Button>
+            </Stack>
           </Grid>
         </Grid>
       </form>
@@ -98,4 +94,4 @@ const MyForm: React.FC = () => {
   );
 };
 
-export default MyForm;
+export default UserForm;
