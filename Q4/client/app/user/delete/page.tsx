@@ -9,13 +9,12 @@ import { useEffect, useState } from 'react';
 export default function Update() {
     const router = useRouter()
     const searchParams = useSearchParams()
-    // const userIds = searchParams.get('userIds').split(',').map(Number)
     const userIdsParam = searchParams.get('userIds');
     const userIds = userIdsParam ? userIdsParam.split(',').map(Number) : [];
 
     const [rows, setRows] = useState<any[]>([]);
 
-
+    // Define the columns for the DataGrid
     const columns: GridColDef[] = [
         { field: 'id', headerName: 'ID', width: 130 },
         { field: 'firstname', headerName: 'First Name', width: 130 },
@@ -29,6 +28,7 @@ export default function Update() {
         }
     }, []);
 
+    // Fetch user data based on user IDs
     function getUsersData(userIds: number[]) {
         userService.getUsersById(userIds)
             .then(users => {
@@ -38,10 +38,11 @@ export default function Update() {
                 setRows(formattedUsers);
             })
             .catch(err => {
-                console.log(err);
+                console.error(err);
             });
     };
 
+    // Map and format user data for the DataGrid
     function handleUsersData(users: User[]) {
         return users.map(user => ({
             id: user.ID,
@@ -51,6 +52,7 @@ export default function Update() {
         }));
     };
 
+    // Format a single user's data for the DataGrid
     function handleSingleUserData(user: User) {
         return [{
             id: user.ID,
@@ -60,10 +62,10 @@ export default function Update() {
         }];
     };
 
+    // Handle the deletion of users
     const handleDeleteUsers = async (userIds: number[]) => {
         try {
-            const deletedUsers = await userService.deleteUsersByIds(userIds);
-            console.log('Deleted users:', deletedUsers);
+            await userService.deleteUsersByIds(userIds);
             router.push('/')
         } catch (error) {
             console.error('Error deleting users:', error);
@@ -82,7 +84,7 @@ export default function Update() {
                 <Grid item xs={12}>
                     <Stack direction="row" spacing={2}>
                         <Button variant="outlined" color="primary" onClick={() => handleDeleteUsers(userIds)} >
-                            Submit
+                            Delete
                         </Button>
                         <Button variant="outlined" color="error" onClick={() => router.push('/')}>
                             Back

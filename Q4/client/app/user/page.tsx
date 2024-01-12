@@ -4,13 +4,15 @@ import { TextField, Button, Grid, Stack } from '@mui/material';
 import userService, { User } from '@/services/userServices';
 import { useRouter } from 'next/navigation';
 
+
+// Define the form data interface
 interface FormData {
   firstName: string;
   lastName: string;
   email: string;
 }
 
-const UserForm: React.FC = () => {
+export default function UserForm() {
   const router = useRouter()
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -18,11 +20,15 @@ const UserForm: React.FC = () => {
     email: '',
   });
 
+
+  // Handle input changes in the form
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+
+  // Handle form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -36,8 +42,7 @@ const UserForm: React.FC = () => {
         Email: formData.email,
       };
 
-      const addedUser = await userService.addNewUser(newUser);
-      console.log('User added:', addedUser);
+      await userService.addNewUser(newUser);
       router.push('/')
     } catch (error) {
       console.error('Error adding user:', error);
@@ -81,7 +86,7 @@ const UserForm: React.FC = () => {
           <Grid item xs={12}>
             <Stack direction="row" spacing={2}>
               <Button variant="outlined" color="primary" type="submit">
-                Submit
+                Create
               </Button>
               <Button variant="outlined" color="error" onClick={() => router.push('/')}>
                 Back
@@ -92,6 +97,4 @@ const UserForm: React.FC = () => {
       </form>
     </div>
   );
-};
-
-export default UserForm;
+}
