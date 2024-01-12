@@ -88,3 +88,23 @@ func DeleteUserByIds(c *fiber.Ctx) error {
 
 	return c.SendString("Users deleted successfully")
 }
+
+func UpdateUser(c *fiber.Ctx) error {
+	userID := c.Params("id")
+	var existingUser models.User
+
+	result := utils.DB.First(&existingUser, userID)
+	if result.Error != nil {
+		return c.Status(http.StatusNotFound).SendString("User not found")
+	}
+
+	var updatedUser models.User
+	if err := c.BodyParser(&updatedUser); err != nil {
+		return c.Status(http.StatusBadRequest).SendString("Invalid request")
+	}
+
+	utils.DB.Model(&existingUser).Updates(updatedUser)
+	fmt.Println("Update User")
+
+	return c.Status(http.StatusOK).JSON(existingUser)
+}
