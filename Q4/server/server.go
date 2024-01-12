@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	// Initialize the database
 	if err := utils.InitDB(); err != nil {
 		panic(err)
 	}
@@ -16,16 +17,18 @@ func main() {
 	app := fiber.New()
 	app.Use(cors.New())
 
+	// Root route for testing purposes
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")
 	})
 
+	// User routes for handling CRUD operations
 	app.Get("/user", handlers.GetAllUser)
-	app.Get("/user/:id", handlers.GetUser)
 	app.Post("/new_user", handlers.CreateUser)
 	app.Get("/users/:ids", handlers.GetUsers)
-	app.Delete("/delete_users/:Ids", handlers.DeleteUserByIds)
+	app.Delete("/delete_users/:ids", handlers.DeleteUsersByIds)
 	app.Put("/update_user/:id", handlers.UpdateUser)
 
+	// Start the app on port 8080
 	app.Listen(":8080")
 }
