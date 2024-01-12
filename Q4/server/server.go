@@ -25,6 +25,7 @@ func main() {
 	app.Post("/new_user", handlers.CreateUser)
 	app.Get("/users/:ids", handlers.GetUsers)
 	app.Delete("/delete_users/:Ids", handlers.DeleteUserByIds)
+	app.Put("/update_user/:id", handlers.UpdateUser)
 
 	app.Listen(":8080")
 }
