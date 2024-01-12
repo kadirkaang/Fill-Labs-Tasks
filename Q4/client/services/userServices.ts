@@ -10,7 +10,9 @@ export interface User {
     Email: string;
 }
 
+// Service for interacting with user-related API endpoints
 const userService = {
+    // Fetch all users from the API
     async getAllUsers(): Promise<User[]> {
         try {
             const response = await axios.get('http://127.0.0.1:8080/user');
@@ -20,6 +22,8 @@ const userService = {
             throw new Error('Failed to fetch users');
         }
     },
+
+    // Add a new user to the API
     async addNewUser(userData: User): Promise<User> {
         console.log(userData);
         try {
@@ -30,6 +34,8 @@ const userService = {
             throw new Error('Failed to add user');
         }
     },
+
+    // Fetch user data by their IDs from the API
     async getUsersById(userIds: number[]): Promise<User> {
         try {
             const response = await axios.get(`http://127.0.0.1:8080/users/${userIds.join(',')}`);
@@ -39,6 +45,8 @@ const userService = {
             throw new Error('Failed to fetch user');
         }
     },
+
+    // Delete users by their IDs from the API
     async deleteUsersByIds(userIds: number[]) {
         try {
             const response = await axios.delete(`http://127.0.0.1:8080/delete_users/${userIds.join(',')}`);
@@ -48,6 +56,17 @@ const userService = {
             throw new Error('Failed to delete users');
         }
     },
+
+    // Update a user's data in the API
+    async updateUser(userId: number, updatedUser: User) {
+        try {
+            const response = await axios.put(`http://127.0.0.1:8080/update_user/${userId}`, updatedUser)
+            return response.data
+        } catch (error) {
+            console.error('Error updating user:', error);
+            throw error;
+        }
+    }
 };
 
 export default userService;
