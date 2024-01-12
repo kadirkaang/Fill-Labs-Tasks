@@ -12,6 +12,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// GetAllUsers retrieves all users from the database.
 func GetAllUser(c *fiber.Ctx) error {
 	var users []models.User
 
@@ -19,21 +20,10 @@ func GetAllUser(c *fiber.Ctx) error {
 	if result.Error != nil {
 		return c.Status(http.StatusNotFound).SendString("Users not found")
 	}
-	fmt.Println("Get All Users")
 	return c.Status(http.StatusOK).JSON(users)
 }
 
-func GetUser(c *fiber.Ctx) error {
-	var user models.User
-	userID := c.Params("id")
-	result := utils.DB.First(&user, userID)
-	if result.Error != nil {
-		return c.Status(http.StatusNotFound).SendString("User not found")
-	}
-	fmt.Println("Get User")
-	return c.Status(http.StatusOK).JSON(user)
-}
-
+// GetUsers retrieves multiple users by their IDs from the database.
 func GetUsers(c *fiber.Ctx) error {
 	var users []models.User
 	idsString := c.Params("ids")
@@ -50,24 +40,22 @@ func GetUsers(c *fiber.Ctx) error {
 		idsInt = append(idsInt, id)
 	}
 
-	fmt.Println("Integer dizi:", idsInt)
-
-	// IN sorgusu kullanarak kullanıcıları bulma
 	utils.DB.Where("id IN (?)", idsInt).Find(&users)
 	return c.Status(http.StatusOK).JSON(users)
 }
 
+// CreateUser adds a new user to the database.
 func CreateUser(c *fiber.Ctx) error {
 	var newUser models.User
 	if err := c.BodyParser(&newUser); err != nil {
 		return c.Status(http.StatusBadRequest).SendString("Invalid request")
 	}
 	utils.DB.Create(&newUser)
-	fmt.Println("Create User")
 	return c.Status(http.StatusCreated).JSON(newUser)
 }
 
-func DeleteUserByIds(c *fiber.Ctx) error {
+// DeleteUsersByIds deletes users by their IDs from the database.
+func DeleteUsersByIds(c *fiber.Ctx) error {
 	idsString := c.Params("ids")
 	fmt.Println(idsString)
 	idsSlice := strings.Split(idsString, ",")
@@ -85,10 +73,10 @@ func DeleteUserByIds(c *fiber.Ctx) error {
 	if result.Error != nil {
 		return result.Error
 	}
-
 	return c.SendString("Users deleted successfully")
 }
 
+// UpdateUser updates a user's information in the database.
 func UpdateUser(c *fiber.Ctx) error {
 	userID := c.Params("id")
 	var existingUser models.User
@@ -104,7 +92,5 @@ func UpdateUser(c *fiber.Ctx) error {
 	}
 
 	utils.DB.Model(&existingUser).Updates(updatedUser)
-	fmt.Println("Update User")
-
 	return c.Status(http.StatusOK).JSON(existingUser)
 }
