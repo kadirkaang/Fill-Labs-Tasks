@@ -13,7 +13,7 @@ import (
 )
 
 // GetAllUsers retrieves all users from the database.
-func GetAllUser(c *fiber.Ctx) error {
+func GetAllUsers(c *fiber.Ctx) error {
 	var users []models.User
 
 	result := utils.DB.Find(&users)
@@ -27,7 +27,6 @@ func GetAllUser(c *fiber.Ctx) error {
 func GetUsers(c *fiber.Ctx) error {
 	var users []models.User
 	idsString := c.Params("ids")
-	fmt.Println(idsString)
 	idsSlice := strings.Split(idsString, ",")
 
 	var idsInt []int
@@ -57,7 +56,6 @@ func CreateUser(c *fiber.Ctx) error {
 // DeleteUsersByIds deletes users by their IDs from the database.
 func DeleteUsersByIds(c *fiber.Ctx) error {
 	idsString := c.Params("ids")
-	fmt.Println(idsString)
 	idsSlice := strings.Split(idsString, ",")
 
 	var idsInt []int
