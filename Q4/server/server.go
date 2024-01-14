@@ -23,7 +23,7 @@ func main() {
 	})
 
 	// User routes for handling CRUD operations
-	app.Get("/user", handlers.GetAllUser)
+	app.Get("/user", handlers.GetAllUsers)
 	app.Post("/new_user", handlers.CreateUser)
 	app.Get("/users/:ids", handlers.GetUsers)
 	app.Delete("/delete_users/:ids", handlers.DeleteUsersByIds)
